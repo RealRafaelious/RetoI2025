@@ -1,0 +1,5 @@
+Guía para el merge de las tablas:
+
+1. Los estudiantes y docentes se asocian a cada centro educativo por medio del código de centro (id_centro)
+
+2. Los estudiantes se vinculan con su docente con la concatenación de: id_centro & grado & grupo
