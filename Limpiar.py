@@ -7,17 +7,6 @@ directorio = "C:/Users/Estudiante UCU/Repositorios/RetoI2025/"
 # obtener todos los archivos excel csv menos los limpios
 archivos = [f for f in os.listdir(directorio) if f.endswith(('.xlsx', '.csv')) and 'limpia' not in f.lower()]
 
-
-
-
-
-
-
-
-
-
-
-#spac4
 for archivo in archivos:
     ruta_completa = os.path.join(directorio, archivo)
     print(f"limpiando: {archivo}")
