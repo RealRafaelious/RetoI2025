@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Ruta
-archivo = "C:/Users/Estudiante UCU/Repositorios/RetoI2025/Tabla_estudiantes_7moa9no.xlsx"
+archivo = "C:/Users/thato/repositorios/Reto 1/Tabla_estudiantes_7moa9no.xlsx"
 
 # Cargar
 df = pd.read_excel(archivo)
