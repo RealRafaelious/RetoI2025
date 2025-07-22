@@ -22,9 +22,6 @@ for archivo in archivos:
         # eliminar fila con todos los valores vacios
         df = df.dropna(how='all')
 
-        # cambiar nulo por texto sin datos
-        df = df.fillna("Sin datos")
-
         # sacar espacios
         for col in df.select_dtypes(include='object'):
              df[col] = df[col].str.strip()

@@ -6,11 +6,6 @@ archivo = "C:/Users/Estudiante UCU/Repositorios/RetoI2025/Tabla_estudiantes_7moa
 # Cargar
 df = pd.read_excel(archivo)
 
-# Limpiar texto
-df = df.fillna("sin datos")
-for col in df.select_dtypes(include='object'):
-    df[col] = df[col].str.strip().str.lower()
-
 # Dividir entre duplicados y no duplicados
 duplicados = df[df.duplicated(subset="id_unico", keep=False)]
 no_duplicados = df[~df.duplicated(subset="id_unico", keep=False)]
