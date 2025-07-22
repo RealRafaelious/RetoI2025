@@ -4,15 +4,20 @@ import os
 # ruta del directorio
 directorio = "C:/Users/Estudiante UCU/Repositorios/RetoI2025/"
 
-# obtener todos los archivos excel menos los limpios
-archivos = [f for f in os.listdir(directorio) if f.endswith('.xlsx') and 'limpia' not in f.lower()]
+# obtener todos los archivos excel csv menos los limpios
+archivos = [f for f in os.listdir(directorio) if f.endswith(('.xlsx', '.csv')) and 'limpia' not in f.lower()]
 
 for archivo in archivos:
     ruta_completa = os.path.join(directorio, archivo)
     print(f"limpiando: {archivo}")
 
     try:
-        df = pd.read_excel(ruta_completa)
+
+        # detectar tipo de archivo
+        if archivo.endswith('.csv'):
+            df = pd.read_csv(ruta_completa, encoding='utf-8', sep=None, engine='python')
+        elif archivo.endswith('.xlsx'):
+            df = pd.read_excel(ruta_completa)
 
         # eliminar fila con todos los valores vacios
         df = df.dropna(how='all')
@@ -22,12 +27,20 @@ for archivo in archivos:
 
         # sacar espacios
         for col in df.select_dtypes(include='object'):
-             df[col] = df[col].str.strip() 
+             df[col] = df[col].str.strip()
+
+        # nomralizar nomnres
+        df.columns = [col.strip().lower().replace(' ', '_') for col in df.columns]
+
 
         # guardar archivo
         nombre_limpio = archivo.replace('.xlsx', '_limpia.xlsx')
-        ruta_limpia = os.path.join(directorio, nombre_limpio)
-        df.to_excel(ruta_limpia, index=False)
+        ruta_salida = ruta_completa
+        
+        if archivo.endswith('.csv'):
+            df.to_csv(ruta_salida, index=False, encoding='utf-8')
+        else:
+            df.to_excel(ruta_salida, index=False)
 
         print(f"guardado como: {nombre_limpio}")
 
