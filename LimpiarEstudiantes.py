@@ -1,24 +1,39 @@
 import pandas as pd
 
-# Cargar el archivo
-df = pd.read_excel("C:/Users/Estudiante UCU/Repositorios/RetoI2025/Tabla_estudiantes_7moa9no.xlsx")
+# Ruta
+archivo = "C:/Users/Estudiante UCU/Repositorios/RetoI2025/Tabla_estudiantes_7moa9no.xlsx"
 
+# Cargar
+df = pd.read_excel(archivo)
 
-# eliminar duplicados conservando la fila con más datos válidos
-columnas_revisar = ["grupo"]
+# Limpiar texto
+df = df.fillna("sin datos")
+for col in df.select_dtypes(include='object'):
+    df[col] = df[col].str.strip().str.lower()
 
-# columna auxiliar para contar cuántos campos NO son "desconocido"
-df["valid_score"] = df[columnas_revisar].apply(lambda row: sum(x != "desconocido" and x != "sin datos" for x in row), axis=1)
+# Dividir entre duplicados y no duplicados
+duplicados = df[df.duplicated(subset="id_unico", keep=False)]
+no_duplicados = df[~df.duplicated(subset="id_unico", keep=False)]
 
-# fila con más datos buenos arriba
-df = df.sort_values(by=["id_unico", "valid_score"], ascending=[True, False])
+# Agrupar duplicados por id_unico
+grupos = duplicados.groupby("id_unico")
 
-# eliminar duplicados por id_unico, quedándose con la fila con más datos buenos
-df = df.drop_duplicates(subset="id_unico", keep="first")
+# Filtrar duplicados: conservar solo los que tienen al menos un grupo válido
+duplicados_limpios = grupos.filter(lambda g: (g["grupo"] != "desconocido").any())
 
-# borrar columna auxiliar
-df = df.drop(columns=["valid_score"])
+# Dentro de esos grupos, eliminar solo los que tienen grupo desconocido
+duplicados_limpios = duplicados_limpios[duplicados_limpios["grupo"] != "desconocido"]
 
-# Guardar el resultado limpio
-df.to_excel("C:/Users/Estudiante UCU/Repositorios/RetoI2025/Tabla_estudiantes_7moa9no_limpia.xlsx", index=False)
-print("Estudiantes limpios, duplicados eliminados.")
+# Detectar ids que solo tienen "desconocido" y guardarlos aparte
+ids_todos_desconocidos = grupos.filter(lambda g: (g["grupo"] == "desconocido").all())
+
+# Combinar todo lo limpio
+df_final = pd.concat([no_duplicados, duplicados_limpios], ignore_index=True)
+
+# Guardar resultados
+df_final.to_excel("C:/Users/Estudiante UCU/Repositorios/RetoI2025/Tabla_estudiantes_7moa9no_limpia.xlsx", index=False)
+ids_todos_desconocidos.to_excel("C:/Users/Estudiante UCU/Repositorios/RetoI2025/Estudiantes_solo_desconocidos.xlsx", index=False)
+
+print("✔ Limpieza completada.")
+print(f"✔ Estudiantes válidos guardados: {df_final.shape[0]}")
+print(f"⚠️ Estudiantes con solo datos 'desconocido' separados: {ids_todos_desconocidos.shape[0]}")
