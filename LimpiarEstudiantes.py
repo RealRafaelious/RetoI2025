@@ -34,6 +34,10 @@ df_final = pd.concat([no_duplicados, duplicados_limpios], ignore_index=True)
 df_final.to_excel("C:/Users/Estudiante UCU/Repositorios/RetoI2025/Tabla_estudiantes_7moa9no_limpia.xlsx", index=False)
 ids_todos_desconocidos.to_excel("C:/Users/Estudiante UCU/Repositorios/RetoI2025/Estudiantes_solo_desconocidos.xlsx", index=False)
 
-print("✔ Limpieza completada.")
-print(f"✔ Estudiantes válidos guardados: {df_final.shape[0]}")
-print(f"⚠️ Estudiantes con solo datos 'desconocido' separados: {ids_todos_desconocidos.shape[0]}")
+cantidad = (df['grupo'] == 'desconocido').sum()
+
+print("Limpieza completada.")
+print(f"Estudiantes válidos guardados: {df_final.shape[0]}")
+print(f"Estudiantes con solo datos 'desconocido' separados: {ids_todos_desconocidos.shape[0]}")
+
+print(f'Cantidad de celdas con valor "desconocido": {cantidad}')
