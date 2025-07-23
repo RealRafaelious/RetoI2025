@@ -1,6 +1,9 @@
 import pandas as pd
 
+
 centrosxlsx = r"C:\Users\Estudiante UCU\Repositorios\RetoI2025\Tabla_centros_7moa9no.xlsx"
+
+# ruta
 df = pd.read_excel(centrosxlsx)
 
 df.columns = [col.strip().lower().replace(" ", "_") for col in df.columns]
@@ -18,6 +21,7 @@ try:
     )
 except PermissionError:
     print("❌ No se pudo guardar el archivo. Cerralo si lo tenés abierto en Excel.")
+
 
 print("✅ Limpieza completada.")
 print(f"Centros con quintil guardados: {df_limpio.shape[0]}")
