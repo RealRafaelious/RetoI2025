@@ -42,6 +42,6 @@ ids_todos_desconocidos.to_excel("Segregaciones/Docentes_solo_desconocidos.xlsx",
 cantidad = (df['grupo'] == 'desconocido').sum()
 
 print("Limpieza completada.")
-print(f"Estudiantes válidos guardados: {df_final.shape[0]}")
-print(f"Estudiantes con solo datos 'desconocido' separados: {ids_todos_desconocidos.shape[0]}")
+print(f"Docentes válidos guardados: {df_final.shape[0]}")
+print(f"Docentes con solo datos 'desconocido' separados: {ids_todos_desconocidos.shape[0]}")
 print(f'Cantidad de celdas con valor "desconocido": {cantidad}')

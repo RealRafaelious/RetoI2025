@@ -26,12 +26,26 @@ duplicados_limpios = duplicados_limpios[duplicados_limpios["grupo"] != "desconoc
 # ids que solo tienen "desconocido" y guardarlos aparte
 ids_todos_desconocidos = grupos.filter(lambda g: (g["grupo"] == "desconocido").all())
 
+# Lista de las columnas a verificar por valores nulos
+columnas_a_verificar = [
+    "cr_total_dias_ingreso",
+    "primera_conexion_crea",
+    "dias_de_conexion_dispositivo",
+    "primera_conexion_dispositivo"
+]
+
+# Eliminar filas donde CUALQUIERA de las columnas especificadas tenga un valor nulo
+# El método .dropna() con subset te permite especificar qué columnas revisar
+df.dropna(subset=columnas_a_verificar, inplace=True)
+
 # todo lo limpio
 df_final = pd.concat([no_duplicados, duplicados_limpios], ignore_index=True)
 
 # resultados
 df_final.to_excel("TablasActuales/Tabla_estudiantes_7moa9no_limpia.xlsx", index=False)
 ids_todos_desconocidos.to_excel("Segregaciones/Estudiantes_solo_desconocidos.xlsx", index=False)
+
+
 
 # cuantas celdas tienen valor "desconocido"?
 cantidad = (df['grupo'] == 'desconocido').sum()
