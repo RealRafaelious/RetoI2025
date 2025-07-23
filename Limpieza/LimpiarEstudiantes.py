@@ -1,7 +1,7 @@
 import pandas as pd
 
 # ruta
-archivo = "C:/Users/Estudiante UCU/Repositorios/RetoI2025/Tabla_estudiantes_7moa9no.xlsx"
+archivo = "TablasIniciales/Tabla_estudiantes_7moa9no.xlsx"
 
 # cargar
 df = pd.read_excel(archivo)
@@ -30,8 +30,8 @@ ids_todos_desconocidos = grupos.filter(lambda g: (g["grupo"] == "desconocido").a
 df_final = pd.concat([no_duplicados, duplicados_limpios], ignore_index=True)
 
 # resultados
-df_final.to_excel("C:/Users/Estudiante UCU/Repositorios/RetoI2025/Tabla_estudiantes_7moa9no_limpia.xlsx", index=False)
-ids_todos_desconocidos.to_excel("C:/Users/Estudiante UCU/Repositorios/RetoI2025/Estudiantes_solo_desconocidos.xlsx", index=False)
+df_final.to_excel("TablasActuales/Tabla_estudiantes_7moa9no_limpia.xlsx", index=False)
+ids_todos_desconocidos.to_excel("Segregaciones/Estudiantes_solo_desconocidos.xlsx", index=False)
 
 # cuantas celdas tienen valor "desconocido"?
 cantidad = (df['grupo'] == 'desconocido').sum()
