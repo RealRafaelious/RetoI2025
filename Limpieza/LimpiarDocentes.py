@@ -1,7 +1,7 @@
 import pandas as pd
 
 # ruta
-archivo = "TablasIniciales/Tabla_docentes_7moa9no.xlsx"
+archivo = "TablasIniciales/Tabla_docentes_7moa9no_conMateria.xlsx"
 
 # cargar
 df = pd.read_excel(archivo)
@@ -9,6 +9,8 @@ df = pd.read_excel(archivo)
 # noromalizar nombres de columnas
 df.columns = [col.strip().lower().replace(" ", "_") for col in df.columns]
 
+# normalizar grupo
+df['grupo'] = df['grupo'].str.lower().str.strip()
 
 # dividir entre duplicados y no duplicados
 duplicados = df[df.duplicated(subset="id_unico", keep=False)]
