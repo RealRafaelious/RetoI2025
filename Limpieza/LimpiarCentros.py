@@ -19,9 +19,9 @@ try:
         index=False
     )
 except PermissionError:
-    print("❌ No se pudo guardar el archivo. Cerralo si lo tenés abierto en Excel.")
+    print("No se pudo guardar el archivo. Cerralo si lo tenés abierto en Excel.")
 
 
-print("✅ Limpieza completada.")
+print("Limpieza completada.")
 print(f"Centros con quintil guardados: {df_limpio.shape[0]}")
 print(f'Cantidad de celdas con valor nulo en ivsmedia original: {df["ivsmedia"].isna().sum()}')
