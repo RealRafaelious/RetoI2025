@@ -1,7 +1,8 @@
 import pandas as pd
 
 
-centrosxlsx = r"C:\Users\Estudiante UCU\Repositorios\RetoI2025\Tabla_centros_7moa9no.xlsx"
+centrosxlsx = r"..\TablasInciales\Tabla_centros_7moa9no.xlsx"
+
 
 # ruta
 df = pd.read_excel(centrosxlsx)
@@ -20,9 +21,9 @@ try:
         index=False
     )
 except PermissionError:
-    print("❌ No se pudo guardar el archivo. Cerralo si lo tenés abierto en Excel.")
+    print("No se pudo guardar el archivo. Cerralo si lo tenés abierto en Excel.")
 
 
-print("✅ Limpieza completada.")
+print("Limpieza completada.")
 print(f"Centros con quintil guardados: {df_limpio.shape[0]}")
 print(f'Cantidad de celdas con valor nulo en ivsmedia original: {df["ivsmedia"].isna().sum()}')
