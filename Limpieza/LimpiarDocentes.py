@@ -35,8 +35,8 @@ print("Edad de todos los docentes actualizada al promedio.")
 df_final = pd.concat([no_duplicados, duplicados_limpios], ignore_index=True)
 
 # resultados
-df_final.to_excel("TablasActuales/Tabla_estudiantes_7moa9no_limpia.xlsx", index=False)
-ids_todos_desconocidos.to_excel("Segregaciones/Estudiantes_solo_desconocidos.xlsx", index=False)
+df_final.to_excel("TablasActuales/Tabla_docentes_7moa9no.xlsx", index=False)
+ids_todos_desconocidos.to_excel("Segregaciones/Docentes_solo_desconocidos.xlsx", index=False)
 
 # cuantas celdas tienen valor "desconocido"?
 cantidad = (df['grupo'] == 'desconocido').sum()
