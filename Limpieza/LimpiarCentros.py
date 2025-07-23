@@ -1,7 +1,6 @@
 import pandas as pd
 
-
-centrosxlsx = r"C:\Users\Estudiante UCU\Repositorios\RetoI2025\Tabla_centros_7moa9no.xlsx"
+centrosxlsx = "TablasIniciales/Tabla_centros_7moa9no.xlsx"
 
 # ruta
 df = pd.read_excel(centrosxlsx)
@@ -16,7 +15,7 @@ print(f"Filas eliminadas por ivsmedia vacía o NaN: {len(df) - len(df_limpio)}")
 # Guardar archivo limpio
 try:
     df_limpio.to_excel(
-        r"C:\Users\Estudiante UCU\Repositorios\RetoI2025\Tabla_centros_7moa9no_limpia.xlsx",
+        r"../Tabla_centros_7moa9no_limpia.xlsx",
         index=False
     )
 except PermissionError:
