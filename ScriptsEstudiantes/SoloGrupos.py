@@ -1,7 +1,7 @@
 import pandas as pd
 
 # Cargar archivo
-archivo = "C:/Users/Estudiante UCU/Repositorios/RetoI2025/Tabla_estudiantes_7moa9no.xlsx"
+archivo = "/Tabla_estudiantes_7moa9no.xlsx"
 df = pd.read_excel(archivo)
 
 # Normalizar nombres de columnas
@@ -38,7 +38,7 @@ cond3 = (df["primera_conexion_crea"] == "") & (df["primera_conexion_dispositivo"
 df = df[~cond3]
 
 # Guardar archivo limpio
-df.to_excel("C:/Users/Estudiante UCU/Repositorios/RetoI2025/Tabla_estudiantes_7moa9no_limpia.xlsx", index=False)
+df.to_excel("/Tabla_estudiantes_7moa9no_limpia.xlsx", index=False)
 
 # Reporte
 print(f"Filas finales luego de todos los filtros: {df.shape[0]}")
