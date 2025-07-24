@@ -1,4 +1,5 @@
 import pandas as pd
+from utils import utils
 
 # ruta
 archivo = "TablasIniciales/Tabla_estudiantes_7moa9no.xlsx"
@@ -14,6 +15,7 @@ df.columns = [col.strip().lower().replace(" ", "_") for col in df.columns]
 # Asegúrate de que 'grupo' no sea null antes de usar .str.lower().str.strip()
 # o maneja los nulos en 'grupo' también si es necesario.
 df['grupo'] = df['grupo'].astype(str).str.lower().str.strip() # Convertir a str antes de lower/strip
+df = utils.formatear_fechas_excel(df)
 
 
 # dividir entre duplicados y no duplicados (AHORA ESTAS OPERANDO SOBRE UN DF SIN NULOS)
