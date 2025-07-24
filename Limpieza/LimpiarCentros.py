@@ -10,7 +10,7 @@ def limpiar_centros():
     df.columns = [col.strip().lower().replace(" ", "_") for col in df.columns]
 
     # ----------------------------
-    # ✅ LIMPIEZA ROBUSTA
+    # LIMPIEZA ROBUSTA
     # ----------------------------
 
     # 1. Reemplazar NaN reales por "sin identificar"
@@ -21,7 +21,7 @@ def limpiar_centros():
     df.loc[df["ivsmedia"] == "", "ivsmedia"] = "sin identificar"
 
     # ----------------------------
-    # ✅ VERIFICACIÓN
+    # VERIFICACIÓN
     # ----------------------------
     print("\nValores únicos después de limpiar:")
     print(df["ivsmedia"].unique())
@@ -39,8 +39,8 @@ def limpiar_centros():
 
     try:
         df.to_excel(ruta_salida, index=False)
-        print("\n✅ Archivo guardado correctamente.")
+        print("\nArchivo guardado correctamente.")
     except PermissionError:
-        print("\n❌ No se pudo guardar el archivo. Cerralo si lo tenés abierto en Excel.")
+        print("\nNo se pudo guardar el archivo. Cerralo si lo tenés abierto en Excel.")
 
 limpiar_centros()
