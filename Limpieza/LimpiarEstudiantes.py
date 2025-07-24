@@ -9,23 +9,6 @@ df = pd.read_excel(archivo)
 # normalizar nombres de columnas
 df.columns = [col.strip().lower().replace(" ", "_") for col in df.columns]
 
-# --- NUEVA UBICACIÓN PARA dropna() ---
-# Lista de las columnas a verificar por valores nulos (usando los nombres normalizados)
-columnas_a_verificar = [
-    "cr_total_dias_ingreso",
-    "primera_conexion_crea",
-    "dias_de_conexion_dispositivo",
-    "primera_conexion_dispositivo"
-]
-
-# Eliminar filas donde CUALQUIERA de las columnas especificadas tenga un valor nulo
-# Esto se hace AHORA, para que el resto de la lógica opere sobre datos sin nulos
-initial_rows = df.shape[0] # Para ver cuántas filas se eliminan
-df.dropna(subset=columnas_a_verificar, inplace=True)
-print(f"Filas eliminadas por nulos: {initial_rows - df.shape[0]}")
-print(f"Filas restantes después de eliminar nulos: {df.shape[0]}")
-# --- FIN DE NUEVA UBICACIÓN ---
-
 
 # normalizar grupo (si esta columna también puede tener nulos o se maneja 'desconocido')
 # Asegúrate de que 'grupo' no sea null antes de usar .str.lower().str.strip()
