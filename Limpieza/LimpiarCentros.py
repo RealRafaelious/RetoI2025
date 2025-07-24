@@ -1,27 +1,46 @@
 import pandas as pd
+import os
 
-def limpiar_centros():  
-    # ruta
-    centrosxlsx = "TablasIniciales/Tabla_centros_7moa9no.xlsx"
-    df = pd.read_excel(centrosxlsx)
-    #estandarización de datos
+def limpiar_centros():
+    # Leer archivo
+    ruta_entrada = "TablasIniciales/Tabla_centros_7moa9no.xlsx"
+    df = pd.read_excel(ruta_entrada)
+
+    # Estandarizar nombres de columnas
     df.columns = [col.strip().lower().replace(" ", "_") for col in df.columns]
 
-    # Filtrar filas donde ivsmedia no sea NaN ni cadena vacía
-    df_limpio = df[df["ivsmedia"].notna() & (df["ivsmedia"].astype(str).str.strip() != "")]
+    # ----------------------------
+    # ✅ LIMPIEZA ROBUSTA
+    # ----------------------------
 
-    print(f"Filas eliminadas por ivsmedia vacía o NaN: {len(df) - len(df_limpio)}")
+    # 1. Reemplazar NaN reales por "sin identificar"
+    df["ivsmedia"] = df["ivsmedia"].fillna("sin identificar")
 
-    # Guardar archivo limpio
+    # 2. Convertir a string, quitar espacios y reemplazar vacíos por "sin identificar"
+    df["ivsmedia"] = df["ivsmedia"].astype(str).str.strip()
+    df.loc[df["ivsmedia"] == "", "ivsmedia"] = "sin identificar"
+
+    # ----------------------------
+    # ✅ VERIFICACIÓN
+    # ----------------------------
+    print("\nValores únicos después de limpiar:")
+    print(df["ivsmedia"].unique())
+
+    print(f'\nCantidad de "sin identificar": {(df["ivsmedia"] == "sin identificar").sum()}')
+    print(f"Total de filas: {len(df)}")
+
+     # Definir ruta de salida en carpeta TablasActuales
+    carpeta_salida = "TablasActuales"
+    if not os.path.exists(carpeta_salida):
+        os.makedirs(carpeta_salida)  # crear carpeta si no existe
+
+    ruta_salida = os.path.abspath(os.path.join(carpeta_salida, "Tabla_centros_7moa9no_limpia.xlsx"))
+    print(f"\nGuardando en: {ruta_salida}")
+
     try:
-        df_limpio.to_excel(
-            r"../Tabla_centros_7moa9no_limpia.xlsx",
-            index=False
-        )
+        df.to_excel(ruta_salida, index=False)
+        print("\n✅ Archivo guardado correctamente.")
     except PermissionError:
-        print("No se pudo guardar el archivo. Cerralo si lo tenés abierto en Excel.")
+        print("\n❌ No se pudo guardar el archivo. Cerralo si lo tenés abierto en Excel.")
 
-
-    print("Limpieza completada.")
-    print(f"Centros con quintil guardados: {df_limpio.shape[0]}")
-    print(f'Cantidad de celdas con valor nulo en ivsmedia original: {df["ivsmedia"].isna().sum()}')
+limpiar_centros()
