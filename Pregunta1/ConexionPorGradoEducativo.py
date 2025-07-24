@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 # ruta
-excel_estudiantes = "./TablasActuales/Tabla_estudiantes_7moa9no.xlsx"
+excel_estudiantes = "./TablasActuales/Tabla_estudiantes_7moa9no_limpia.xlsx"
 
 # cargar
 df_estudiantes = pd.read_excel(excel_estudiantes)
