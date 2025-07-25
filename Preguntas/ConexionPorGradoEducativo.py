@@ -3,6 +3,23 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os # Importar os para manejo de rutas
 
+
+
+
+
+###############################################################################################
+# 1. ¿Varía el uso de la plataforma CREA según el grado educativo? ¿Hay diferencias por sexo? #
+###############################################################################################
+
+# Detalles de estándares:
+# Grado educativo: 7mo, 8vo, 9no
+# Sexo: Masculino, Femenino
+# Se tomaron en cuenta dentro de la muestra aquellas personas que se hayan conectado 30 o más veces.
+
+
+
+
+
 # ruta
 excel_estudiantes = "./TablasActuales/Tabla_estudiantes_7moa9no_limpia.xlsx"
 
@@ -34,15 +51,6 @@ print("Nombres de columnas limpiados exitosamente.")
 print("\nPrimeras 5 filas del DataFrame:")
 print(df_estudiantes.head())
 
-
-###############################################################################################
-# 1. ¿Varía el uso de la plataforma CREA según el grado educativo? ¿Hay diferencias por sexo? #
-###############################################################################################
-
-# Detalles de estándares:
-# Grado educativo: 7mo, 8vo, 9no
-# Sexo: Masculino, Femenino
-# Se tomaron en cuenta dentro de la muestra aquellas personas que se hayan conectado 30 o más veces.
 
 # --- Aplicar el filtro de 30 o más conexiones en 'cr_total_dias_ingreso' ---
 df_filtrado = df_estudiantes[df_estudiantes['cr_total_dias_ingreso'] >= 30].copy()
