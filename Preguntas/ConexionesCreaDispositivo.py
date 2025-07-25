@@ -3,8 +3,18 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import pearsonr
 
+
+
+#########################################################################################
+#2. ¿Hay diferencia entre el uso de CREA y la conexión por dispositivo? ¿Correlacionan? #
+#########################################################################################
+
+
+
+
+
 # Ruta del archivo
-archivo = r"..\TablasActuales\Tabla_estudiantes_7moa9no_limpia.xlsx"
+archivo = "./TablasActuales/Tabla_estudiantes_7moa9no_limpia.xlsx"
 
 # Cargar datos
 df = pd.read_excel(archivo)
