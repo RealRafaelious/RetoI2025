@@ -12,7 +12,6 @@ from scipy.stats import pearsonr
 
 
 
-
 # Ruta del archivo
 archivo = "./TablasActuales/Tabla_estudiantes_7moa9no_limpia.xlsx"
 
