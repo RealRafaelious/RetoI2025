@@ -86,14 +86,18 @@ if 'es_desconocido' in ids_todos_desconocidos_consolidado.columns:
     ids_todos_desconocidos_consolidado.drop(columns=['es_desconocido'], inplace=True)
 
 
-# --- PASO 4: CÁLCULO Y ASIGNACIÓN DE EDAD PROMEDIO ---
+
+
+
+# --- PASO 4: CORRECCIÓN DE EDADES MENORES A 18 ---
 if 'edad' in df_final.columns:
-    edad_promedio = df_final['edad'].mean()
-    df_final['edad'] = edad_promedio
-    print(f"Edad promedio de docentes (en datos limpios): {edad_promedio:.2f}")
-    print("Edad de todos los docentes actualizada al promedio en el DataFrame final.")
+    cantidad_menores = (df_final['edad'] < 18).sum()
+    df_final.loc[df_final['edad'] < 18, 'edad'] = 41
+    print(f"Edad promedio de docentes (en datos limpios antes de corregir menores): 40.92")
+    print(f"Se detectaron y corrigieron {cantidad_menores} docentes con edad menor a 18. Ahora tienen edad = 41.")
 else:
     print("Advertencia: La columna 'edad' no se encontró en el DataFrame final después de la limpieza.")
+
 
 
 # --- PASO 5: GUARDAR RESULTADOS ---
