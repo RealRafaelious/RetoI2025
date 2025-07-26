@@ -1,10 +1,10 @@
 import pandas as pd
 
 # ruta
-archivo = "TablasIniciales/Tabla_docentes_7moa9no.csv"
+archivo = "TablasIniciales/Tabla_docentes_7moa9no_conMateria.xlsx"
 
 # cargar
-df = pd.read_csv(archivo)
+df = pd.read_excel(archivo)
 
 # normalizar nombres de columnas
 df.columns = [col.strip().lower().replace(" ", "_") for col in df.columns]
