@@ -92,7 +92,8 @@ if 'es_desconocido' in ids_todos_desconocidos_consolidado.columns:
 # --- PASO 4: CORRECCIÓN DE EDADES MENORES A 18 ---
 if 'edad' in df_final.columns:
     cantidad_menores = (df_final['edad'] < 18).sum()
-    df_final.loc[df_final['edad'] < 18, 'edad'] = 41
+    # Corregir edades menores a 18 y nulos a 41
+    df_final.loc[(df_final['edad'] < 18) | (pd.isnull(df_final['edad'])), 'edad'] = 41
     print(f"Edad promedio de docentes (en datos limpios antes de corregir menores): 40.92")
     print(f"Se detectaron y corrigieron {cantidad_menores} docentes con edad menor a 18. Ahora tienen edad = 41.")
 else:

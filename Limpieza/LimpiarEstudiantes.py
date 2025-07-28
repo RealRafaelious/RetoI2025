@@ -93,6 +93,31 @@ print("Columna 'grupo' normalizada.")
 # --- Formatear fechas ---
 df = formatear_fechas_excel(df)
 
+
+# --- INICIO DEL NUEVO CÓDIGO PARA FILTRAR POR DÍAS DE CONEXIÓN ---
+initial_rows_before_connection_filter = df.shape[0]
+print(f"\n--- Aplicando filtro: estudiantes con menos de 10 días de conexión ({'cr_total_dias_ingreso'}) serán eliminados ---")
+
+# Asegurarse de que 'cr_total_dias_ingreso' sea numérico para el filtro
+# Si hay nulos en esta columna, puedes decidir cómo manejarlos antes del filtro
+# Por ejemplo, rellenarlos con 0 o eliminarlos si no quieres incluirlos en el conteo de días
+if 'cr_total_dias_ingreso' in df.columns:
+    # Convertir a numérico, coercing errores a NaN. Luego rellenar NaN con 0 para que no fallen el filtro
+    df['cr_total_dias_ingreso'] = pd.to_numeric(df['cr_total_dias_ingreso'], errors='coerce').fillna(0)
+    
+    # Aplicar el filtro: conservar solo filas donde 'cr_total_dias_ingreso' es >= 10
+    df = df[df['cr_total_dias_ingreso'] >= 10].copy()
+    
+    rows_after_connection_filter = df.shape[0]
+    print(f"Filas eliminadas por menos de 10 días de conexión: {initial_rows_before_connection_filter - rows_after_connection_filter}")
+    print(f"Filas restantes después del filtro de conexión: {rows_after_connection_filter}")
+else:
+    print(f"Advertencia: Columna 'cr_total_dias_ingreso' no encontrada. No se aplicó el filtro de conexión.")
+
+print("--- Fin del filtro por días de conexión ---\n")
+# --- FIN DEL NUEVO CÓDIGO ---
+
+
 # --- INICIO DE LA SOLUCIÓN ALTERNATIVA PARA EL PROBLEMA DE datetime_format ---
 # Convertir explícitamente las columnas de fecha a string ANTES de guardar
 # Si tu Pandas no soporta datetime_format, esta es la forma de forzar la visualización en Excel
@@ -125,6 +150,7 @@ df_final = pd.concat([no_duplicados, duplicados_limpios], ignore_index=True)
 
 
 # --- Calcular cantidad de celdas con valor "desconocido" ---
+# Esta cantidad se calcula sobre el 'df' después de la carga y el filtro de conexión
 cantidad_desconocido = (df['grupo'] == 'desconocido').sum()
 
 

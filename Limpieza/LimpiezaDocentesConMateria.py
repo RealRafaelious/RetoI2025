@@ -86,9 +86,6 @@ if 'es_desconocido' in ids_todos_desconocidos_consolidado.columns:
     ids_todos_desconocidos_consolidado.drop(columns=['es_desconocido'], inplace=True)
 
 
-
-
-
 # --- PASO 4: CORRECCIÓN DE EDADES MENORES A 18 ---
 if 'edad' in df_final.columns:
     cantidad_menores = (df_final['edad'] < 18).sum()
