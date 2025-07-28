@@ -24,17 +24,17 @@ prom_varones = varones.mean()
 t_stat, p_value = ttest_ind(mujeres, varones)
 
 # Mostrar resultados
-print("📊 Promedio conexión (docente mujer):", round(prom_mujeres, 2))
-print("📊 Promedio conexión (docente varón):", round(prom_varones, 2))
-print("🔬 p-valor:", round(p_value, 5))
+print("Promedio conexión (docente mujer):", round(prom_mujeres, 2))
+print("Promedio conexión (docente varón):", round(prom_varones, 2))
+print("p-valor:", round(p_value, 5))
 
 if p_value < 0.05:
-    print("✅ El sexo del docente influye en la conexión (diferencia significativa).")
+    print("El sexo del docente influye en la conexión (diferencia significativa).")
 else:
-    print("❌ No hay evidencia significativa de que influya el sexo del docente.")
+    print("No hay evidencia significativa de que influya el sexo del docente.")
 
 # ---------------------------------
-# 📈 Gráfico: distribución de conexión por sexo docente
+# Gráfico: distribución de conexión por sexo docente
 # ---------------------------------
 plt.figure(figsize=(8, 6))
 sns.boxplot(data=df_filtrado, x="sexo_docente", y="dias_de_conexion_dispositivo", palette="pastel")
