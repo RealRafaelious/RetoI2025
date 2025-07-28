@@ -12,7 +12,7 @@ import os # Importar os para manejo de rutas
 # Detalles de estándares:
 # Grado educativo: 7mo, 8vo, 9no
 # Sexo: Masculino, Femenino
-# Se tomaron en cuenta dentro de la muestra aquellas personas que se hayan conectado 30 o más veces.
+# Se tomaron en cuenta dentro de la muestra aquellas personas que se hayan conectado 10 o más veces.
 
 
 
@@ -50,7 +50,7 @@ print(df_estudiantes.head())
 
 
 # --- Aplicar el filtro de 30 o más conexiones en 'cr_total_dias_ingreso' ---
-df_filtrado = df_estudiantes[df_estudiantes['cr_total_dias_ingreso'] >= 30].copy()
+df_filtrado = df_estudiantes[df_estudiantes['cr_total_dias_ingreso'] >= 10].copy()
 
 # Asegurarse de que las columnas 'grado' y 'sexo' estén limpias y sean consistentes
 df_filtrado['grado'] = df_filtrado['grado'].astype(str).str.strip().str.lower()
@@ -80,7 +80,7 @@ mapeo_sexo_display = {'f': 'femenino', 'm': 'masculino'}
 df_filtrado['sexo_display'] = df_filtrado['sexo'].replace(mapeo_sexo_display)
 
 
-print("Análisis de Uso de Plataforma CREA (con 30+ días de ingreso):\n")
+print("Análisis de Uso de Plataforma CREA (con 10+ días de ingreso):\n")
 
 # Uso promedio por grado educativo
 # Añadir observed=True para silenciar FutureWarning si 'grado' es categórica
@@ -109,7 +109,7 @@ plt.style.use('seaborn-v0_8-darkgrid') # Estilo más estético
 plt.figure(figsize=(8, 6))
 # Añadir hue='grado' y legend=False para silenciar FutureWarning de palette
 sns.barplot(x='grado', y='cr_total_dias_ingreso', data=uso_por_grado, hue='grado', legend=False, palette='viridis')
-plt.title('Uso Promedio de CREA por Grado Educativo (Estudiantes con 30+ Ingresos)')
+plt.title('Uso Promedio de CREA por Grado Educativo (Estudiantes con 10+ Ingresos)')
 plt.xlabel('Grado Educativo')
 plt.ylabel('Días Promedio de Ingreso a CREA')
 plt.ylim(bottom=0) # Asegura que el eje y empiece en 0
@@ -120,7 +120,7 @@ plt.show()
 plt.figure(figsize=(7, 5))
 # Si usaste 'sexo_display', úsalo aquí. Si no, usa 'sexo'.
 sns.barplot(x='sexo', y='cr_total_dias_ingreso', data=uso_por_sexo, hue='sexo', legend=False, palette='plasma')
-plt.title('Uso Promedio de CREA por Sexo (Estudiantes con 30+ Ingresos)')
+plt.title('Uso Promedio de CREA por Sexo (Estudiantes con 10+ Ingresos)')
 plt.xlabel('Sexo')
 plt.ylabel('Días Promedio de Ingreso a CREA')
 plt.ylim(bottom=0)
@@ -131,7 +131,7 @@ plt.show()
 plt.figure(figsize=(10, 7))
 # Si usaste 'sexo_display', úsalo aquí para el hue.
 sns.barplot(x='grado', y='cr_total_dias_ingreso', hue='sexo', data=uso_por_grado_sexo, palette='coolwarm')
-plt.title('Uso Promedio de CREA por Grado y Sexo (Estudiantes con 30+ Ingresos)')
+plt.title('Uso Promedio de CREA por Grado y Sexo (Estudiantes con 10+ Ingresos)')
 plt.xlabel('Grado Educativo')
 plt.ylabel('Días Promedio de Ingreso a CREA')
 plt.ylim(bottom=0)
@@ -142,7 +142,7 @@ plt.show()
 # Gráfico 4: Distribución del uso de CREA por grado (Box Plot)
 plt.figure(figsize=(10, 6))
 sns.boxplot(x='grado', y='cr_total_dias_ingreso', data=df_filtrado, palette='cividis')
-plt.title('Distribución del Uso de CREA por Grado Educativo (Estudiantes con 30+ Ingresos)')
+plt.title('Distribución del Uso de CREA por Grado Educativo (Estudiantes con 10+ Ingresos)')
 plt.xlabel('Grado Educativo')
 plt.ylabel('Días de Ingreso a CREA')
 plt.grid(axis='y', linestyle='--', alpha=0.7)
@@ -152,7 +152,7 @@ plt.show()
 plt.figure(figsize=(8, 6))
 # Si usaste 'sexo_display', úsalo aquí.
 sns.boxplot(x='sexo', y='cr_total_dias_ingreso', data=df_filtrado, palette='magma')
-plt.title('Distribución del Uso de CREA por Sexo (Estudiantes con 30+ Ingresos)')
+plt.title('Distribución del Uso de CREA por Sexo (Estudiantes con 10+ Ingresos)')
 plt.xlabel('Sexo')
 plt.ylabel('Días de Ingreso a CREA')
 plt.grid(axis='y', linestyle='--', alpha=0.7)
