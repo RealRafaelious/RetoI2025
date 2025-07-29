@@ -44,12 +44,14 @@ plt.ylabel("Días conexión dispositivo")
 plt.tight_layout()
 plt.show()
 
-# Visualización 3: Relación CREA vs dispositivo en términos de días
+# 🔄 Visualización 3: Hexbin plot en lugar de scatterplot
 plt.figure(figsize=(8,6))
-sns.scatterplot(x=col_dias_disp, y=col_total_dias, data=df, alpha=0.5)
-plt.title("Días conexión dispositivo vs Total días ingreso")
+plt.hexbin(df[col_dias_disp], df[col_total_dias], gridsize=20, cmap="Blues")
+plt.colorbar(label="Cantidad de estudiantes")
+plt.title("Densidad: conexión dispositivo vs total ingreso")
 plt.xlabel("Días conexión dispositivo")
 plt.ylabel("Total días ingreso")
+plt.grid(True)
 plt.tight_layout()
 plt.show()
 
