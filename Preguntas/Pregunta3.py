@@ -132,6 +132,43 @@ else:
     print("No hay datos suficientes para el Gráfico 3 (primera_conexion_crea).")
 
 
+# Preparar datos para gráfico combinado
+df_crea = docentes_estudiantes[['nivel_vulnerabilidad', 'cr_total_dias_ingreso']].copy()
+df_crea = df_crea.dropna()
+df_crea['tipo_conexion'] = 'CREA'
+df_crea.rename(columns={'cr_total_dias_ingreso': 'dias_conexion'}, inplace=True)
+
+df_disp = docentes_estudiantes[['nivel_vulnerabilidad', 'dias_de_conexion_dispositivo']].copy()
+df_disp = df_disp.dropna()
+df_disp['tipo_conexion'] = 'Dispositivo'
+df_disp.rename(columns={'dias_de_conexion_dispositivo': 'dias_conexion'}, inplace=True)
+
+# Unir ambos para comparar
+df_combined = pd.concat([df_crea, df_disp], axis=0)
+
+# Gráfico combinado
+plt.figure(figsize=(12, 7))
+sns.boxplot(x='nivel_vulnerabilidad', y='dias_conexion', hue='tipo_conexion', data=df_combined, palette='Set2')
+plt.title('Comparación de Días de Conexión por Nivel de Vulnerabilidad')
+plt.xlabel('Nivel de Vulnerabilidad (IVSMedia - Quintiles)')
+plt.ylabel('Días de Conexión')
+plt.legend(title='Tipo de Conexión')
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+
+
+plt.figure(figsize=(12, 6))
+sns.barplot(data=df_combined, x='nivel_vulnerabilidad', y='dias_conexion', hue='tipo_conexion', ci='sd', palette='Set2')
+plt.title('Promedio de Días de Conexión por Quintil y Tipo de Conexión')
+plt.ylabel('Días de Conexión Promedio')
+plt.xlabel('Nivel de Vulnerabilidad')
+plt.legend(title='Tipo de Conexión')
+plt.xticks(rotation=45, ha='right')
+plt.tight_layout()
+plt.show()
+
+
 # --- Gráfico 4 (Opcional): Frecuencia de Primera Conexión a Dispositivo por Nivel de Vulnerabilidad y Sexo ---
 plt.figure(figsize=(12, 7))
 data_for_plot4 = docentes_estudiantes.dropna(subset=['primera_conexion_dispositivo', 'nivel_vulnerabilidad'])
