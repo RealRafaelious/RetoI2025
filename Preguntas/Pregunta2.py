@@ -36,11 +36,16 @@ plt.title("Distribución Primera conexión Dispositivo")
 plt.tight_layout()
 plt.show()
 
-# Scatterplot de días de conexión dispositivo vs total días ingreso
-plt.figure(figsize=(6,6))
-sns.scatterplot(data=df, x=col_total_dias, y=col_dias_conexion_disp)
-plt.title("Días de conexión dispositivo vs Total días de ingreso")
+plt.figure(figsize=(8,6))
+plt.hexbin(df[col_total_dias], df[col_dias_conexion_disp], gridsize=20, cmap='Blues')
+plt.colorbar(label='Cantidad de estudiantes')
+plt.xlabel("Total días de ingreso")
+plt.ylabel("Días de conexión por dispositivo")
+plt.title("Densidad: ingreso vs. conexión por dispositivo")
+plt.grid(True)
+plt.tight_layout()
 plt.show()
+
 
 # Forzar conversión de columnas de fecha a datetime
 df[col_uso_crea] = pd.to_datetime(df[col_uso_crea], errors='coerce')
