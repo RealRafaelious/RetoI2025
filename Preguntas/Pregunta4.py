@@ -18,6 +18,7 @@ resumen = agrupado.agg(["count", "mean", "std"]).sort_values("count", ascending=
 print("\nResumen por docente:")
 print(resumen.head())
 
+
 # grafico de barras
 plt.figure(figsize=(14, 6))
 sns.barplot(data=resumen.reset_index(),
