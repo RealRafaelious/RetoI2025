@@ -3,6 +3,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from scipy.stats import pearsonr
 
+###########################################################################################
+# 2. ¿Hay diferencia entre el uso de CREA y la conexión por dispositivo? ¿Correlacionan?  #
+###########################################################################################
+
+
 # Cargar datos
 archivo = "./TablasActuales/Tabla_estudiantes_7moa9no_limpia.xlsx"
 df = pd.read_excel(archivo)
@@ -20,14 +25,6 @@ df[col_disp_fecha] = pd.to_datetime(df[col_disp_fecha], errors="coerce")
 # Crear columna de diferencia de días
 df["dias_diferencia_crea_disp"] = (df[col_crea_fecha] - df[col_disp_fecha]).dt.days
 
-# Visualización 1: Histograma de diferencias de fechas
-plt.figure(figsize=(10,5))
-sns.histplot(df["dias_diferencia_crea_disp"].dropna(), bins=50, kde=True)
-plt.axvline(0, color='red', linestyle='--')
-plt.title("Diferencia en días entre primera conexión CREA y Dispositivo")
-plt.xlabel("Días (positivos: CREA después, negativos: CREA antes)")
-plt.tight_layout()
-plt.show()
 
 # Contar casos
 print("\n--- Resumen de Conexión Inicial ---")
@@ -35,25 +32,15 @@ print((df["dias_diferencia_crea_disp"] > 0).sum(), "estudiantes se conectaron pr
 print((df["dias_diferencia_crea_disp"] < 0).sum(), "estudiantes se conectaron primero a CREA")
 print((df["dias_diferencia_crea_disp"] == 0).sum(), "estudiantes se conectaron el mismo día")
 
-# Visualización 2: Dispersión entre días conectados y total días de ingreso
+# Visualización 2: Dispersión entre días conectados y total días de ingreso con línea de tendencia
 plt.figure(figsize=(8,6))
-sns.scatterplot(x=col_total_dias, y=col_dias_disp, data=df, alpha=0.5)
-plt.title("Días de conexión vs Total días de ingreso")
-plt.xlabel("Total días ingreso")
-plt.ylabel("Días conexión dispositivo")
+sns.regplot(y=col_total_dias, x=col_dias_disp, data=df, scatter_kws={'alpha':0.5}, line_kws={'color':'red'})
+plt.title("Días de conexión vs Total días de ingreso con Línea de Tendencia")
+plt.ylabel("Total días ingreso")
+plt.xlabel("Días conexión dispositivo")
 plt.tight_layout()
 plt.show()
 
-# 🔄 Visualización 3: Hexbin plot en lugar de scatterplot
-plt.figure(figsize=(8,6))
-plt.hexbin(df[col_dias_disp], df[col_total_dias], gridsize=20, cmap="Blues")
-plt.colorbar(label="Cantidad de estudiantes")
-plt.title("Densidad: conexión dispositivo vs total ingreso")
-plt.xlabel("Días conexión dispositivo")
-plt.ylabel("Total días ingreso")
-plt.grid(True)
-plt.tight_layout()
-plt.show()
 
 # Correlación entre fechas de conexión
 df_corr = df[[col_crea_fecha, col_disp_fecha]].dropna()
