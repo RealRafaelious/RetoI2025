@@ -9,8 +9,6 @@ import seaborn as sns
 docentes_estudiantes = pd.read_excel("TablasActuales/UNION.xlsx")
 # --- 2. Preparación de datos ---
 
-# --- 2. Preparación de datos ---
-
 # *** CAMBIO CRÍTICO AQUÍ ***
 # Convertir 'ivsmedia' para extraer el número del quintil
 # Primero, asegúrate de que sea un string para usar str.extract
@@ -34,7 +32,12 @@ if docentes_estudiantes.empty:
     print("ERROR: El DataFrame está vacío después de limpiar nulos en la columna de quintil numérico. No se puede continuar el análisis.")
     exit()
 
-# *** USAMOS LA COLUMNA NUMÉRICA PARA DEFINIR EL NIVEL DE VULNERABILIDAD ***
+# *** CÁLCULO DE PORCENTAJES PARA LAS ETIQUETAS ***
+# Calcular el conteo de cada quintil
+quintil_counts = docentes_estudiantes['ivsmedia_quintil_numerico'].value_counts(normalize=False)
+total_students = quintil_counts.sum()
+quintil_percentages = (quintil_counts / total_students * 100).sort_index()
+
 # Define las etiquetas de forma explícita y asegúrate del orden.
 # Asumiendo que Quintil 1 es el más vulnerable y Quintil 5 el menos vulnerable.
 labels_vulnerabilidad_map = {
@@ -49,17 +52,23 @@ labels_vulnerabilidad_map = {
 docentes_estudiantes['nivel_vulnerabilidad'] = docentes_estudiantes['ivsmedia_quintil_numerico'].map(labels_vulnerabilidad_map)
 
 # Convertir a tipo categórico y establecer el orden
-# Es importante asegurarse de que solo se usen las etiquetas que realmente existen en tus datos
-# y que 'ivsmedia_quintil_numerico' es de tipo int o float para el 'in labels_vulnerabilidad_map'
 valid_quintiles_in_data = sorted(docentes_estudiantes['ivsmedia_quintil_numerico'].unique())
 existing_labels = [labels_vulnerabilidad_map[q] for q in valid_quintiles_in_data if q in labels_vulnerabilidad_map]
 
-# Es crucial que las categorías estén en el orden deseado para los gráficos (más vulnerable a menos vulnerable)
-# Si tus datos tienen quintiles del 1 al 5 y 1 es el más vulnerable, el orden numérico ya es el correcto.
-# Si solo aparecen algunos quintiles en tus datos, ajusta 'categories' para que solo incluyan los existentes.
+# Crear las nuevas etiquetas incluyendo el porcentaje
+new_x_labels = []
+for q_num in sorted(valid_quintiles_in_data):
+    if q_num in labels_vulnerabilidad_map:
+        original_label = labels_vulnerabilidad_map[q_num]
+        percentage = quintil_percentages.get(q_num, 0) # Usa .get para manejar si un quintil no tiene datos
+        new_x_labels.append(f"{original_label}\n({percentage:.1f}%)") # Formato: "Quintil X (Descripción)\n(YY.Y%)"
+
+# Asegúrate de que las categorías del DataFrame también incluyan los porcentajes si deseas que se usen directamente
+# para el ordenamiento interno del boxplot/barplot, aunque normalmente con 'ordered=True' basta.
+# Para el caso de las etiquetas del eje x, las estableceremos manualmente después de crear el gráfico.
 docentes_estudiantes['nivel_vulnerabilidad'] = pd.Categorical(
     docentes_estudiantes['nivel_vulnerabilidad'],
-    categories=existing_labels, # Usa solo las etiquetas para los quintiles presentes en tus datos
+    categories=existing_labels, # Aquí mantenemos las etiquetas originales para el orden categórico
     ordered=True
 )
 
@@ -80,56 +89,7 @@ docentes_estudiantes['dias_de_conexion_dispositivo'] = pd.to_numeric(docentes_es
 
 # --- 4. Visualización de diferencias (resto del código igual) ---
 
-plt.style.use('seaborn-v0_8-darkgrid')
 
-# --- Gráfico 1: Uso del Dispositivo (dias_de_conexion_dispositivo) por Nivel de Vulnerabilidad ---
-plt.figure(figsize=(10, 6))
-data_for_plot1 = docentes_estudiantes.dropna(subset=['dias_de_conexion_dispositivo', 'nivel_vulnerabilidad'])
-if not data_for_plot1.empty:
-    sns.boxplot(x='nivel_vulnerabilidad', y='dias_de_conexion_dispositivo', data=data_for_plot1, palette='viridis')
-    plt.title('Días de Conexión del Dispositivo por Nivel de Vulnerabilidad')
-    plt.xlabel('Nivel de Vulnerabilidad (Basado en IVSMedia - Quintiles)')
-    plt.ylabel('Días de Conexión del Dispositivo')
-    plt.xticks(rotation=45, ha='right')
-    plt.tight_layout()
-    plt.show()
-else:
-    print("No hay datos suficientes para el Gráfico 1 (dias_de_conexion_dispositivo).")
-
-
-# --- Gráfico 2: Uso de CREA (cr_total_dias_ingreso) por Nivel de Vulnerabilidad ---
-plt.figure(figsize=(10, 6))
-data_for_plot2 = docentes_estudiantes.dropna(subset=['cr_total_dias_ingreso', 'nivel_vulnerabilidad'])
-if not data_for_plot2.empty:
-    sns.boxplot(x='nivel_vulnerabilidad', y='cr_total_dias_ingreso', data=data_for_plot2, palette='plasma')
-    plt.title('Días de Ingreso a CREA por Nivel de Vulnerabilidad')
-    plt.xlabel('Nivel de Vulnerabilidad (Basado en IVSMedia - Quintiles)')
-    plt.ylabel('Días de Ingreso a CREA')
-    plt.xticks(rotation=45, ha='right')
-    plt.tight_layout()
-    plt.show()
-else:
-    print("No hay datos suficientes para el Gráfico 2 (cr_total_dias_ingreso).")
-
-
-# --- Gráfico 3 (Opcional): Frecuencia de Primera Conexión a CREA por Nivel de Vulnerabilidad y Sexo ---
-plt.figure(figsize=(12, 7))
-data_for_plot3 = docentes_estudiantes.dropna(subset=['primera_conexion_crea', 'nivel_vulnerabilidad'])
-if not data_for_plot3.empty:
-    if 'sexo_estudiante' in data_for_plot3.columns:
-        sns.countplot(x='nivel_vulnerabilidad', hue='sexo_estudiante', data=data_for_plot3, palette='cividis')
-        plt.legend(title='Sexo del Estudiante')
-    else:
-        sns.countplot(x='nivel_vulnerabilidad', data=data_for_plot3, palette='cividis')
-        print("Advertencia: La columna 'sexo_estudiante' no se encontró para el Gráfico 3. Se generó sin distinción de sexo.")
-    plt.title('Conteo de Estudiantes con Primera Conexión a CREA por Nivel de Vulnerabilidad y Sexo')
-    plt.xlabel('Nivel de Vulnerabilidad (Basado en IVSMedia - Quintiles)')
-    plt.ylabel('Número de Estudiantes')
-    plt.xticks(rotation=45, ha='right')
-    plt.tight_layout()
-    plt.show()
-else:
-    print("No hay datos suficientes para el Gráfico 3 (primera_conexion_crea).")
 
 
 # Preparar datos para gráfico combinado
@@ -153,7 +113,8 @@ plt.title('Comparación de Días de Conexión por Nivel de Vulnerabilidad')
 plt.xlabel('Nivel de Vulnerabilidad (IVSMedia - Quintiles)')
 plt.ylabel('Días de Conexión')
 plt.legend(title='Tipo de Conexión')
-plt.xticks(rotation=45, ha='right')
+# Establecer las etiquetas del eje X con los porcentajes
+plt.xticks(ticks=range(len(new_x_labels)), labels=new_x_labels, rotation=45, ha='right')
 plt.tight_layout()
 plt.show()
 
@@ -164,7 +125,8 @@ plt.title('Promedio de Días de Conexión por Quintil y Tipo de Conexión')
 plt.ylabel('Días de Conexión Promedio')
 plt.xlabel('Nivel de Vulnerabilidad')
 plt.legend(title='Tipo de Conexión')
-plt.xticks(rotation=45, ha='right')
+# Establecer las etiquetas del eje X con los porcentajes
+plt.xticks(ticks=range(len(new_x_labels)), labels=new_x_labels, rotation=45, ha='right')
 plt.tight_layout()
 plt.show()
 
@@ -182,7 +144,8 @@ if not data_for_plot4.empty:
     plt.title('Conteo de Estudiantes con Primera Conexión a Dispositivo por Nivel de Vulnerabilidad y Sexo')
     plt.xlabel('Nivel de Vulnerabilidad (Basado en IVSMedia - Quintiles)')
     plt.ylabel('Número de Estudiantes')
-    plt.xticks(rotation=45, ha='right')
+    # Establecer las etiquetas del eje X con los porcentajes
+    plt.xticks(ticks=range(len(new_x_labels)), labels=new_x_labels, rotation=45, ha='right')
     plt.tight_layout()
     plt.show()
 else:
