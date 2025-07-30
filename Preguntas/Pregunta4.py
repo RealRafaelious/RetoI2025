@@ -1,60 +1,51 @@
-#################################################################################
-# 4. ¿Los estudiantes que comparten docente muestran patrones de uso similares? #
-#################################################################################
 import pandas as pd
-from scipy.stats import f_oneway
 import matplotlib.pyplot as plt
 import seaborn as sns
+import numpy as np
 
-# Cargar archivo unido
+# Cargar archivo combinado
 df = pd.read_excel("TablasActuales/UNION.xlsx")
 
-# Filtrar columnas necesarias y eliminar nulos
-df_filtrado = df[["id_unico_docente", "dias_de_conexion_dispositivo"]].dropna()
+# Mostrar columnas (para verificar)
+print("Columnas disponibles:", df.columns)
 
-# agrupar por docente 
-agrupado = df_filtrado.groupby("id_unico_docente")["dias_de_conexion_dispositivo"]
-resumen = agrupado.agg(["count", "mean", "std"]).sort_values("count", ascending=False)
-print("\nResumen por docente:")
-print(resumen.head())
+# Filtrar columnas directamente con los nombres reales
+df_filtrado = df[["id_centro_docente", "grado_docente", "cr_total_dias_ingreso"]].dropna()
 
-# grafico de barras
-plt.figure(figsize=(14, 6))
-sns.barplot(data=resumen.reset_index(),
-            x="id_unico_docente", 
-            y="mean",
-            palette="crest"
-)
-plt.xticks(rotation=90)
-plt.title("Promedio de días de conexión por docente")
-plt.xlabel("Docente")
-plt.ylabel("Días de conexión promedio")
-plt.grid(axis='y', linestyle='--', alpha=0.7)
+# Crear columna combinada centro + grado
+df_filtrado["centro_grado"] = df_filtrado["id_centro_docente"].astype(str) + " - " + df_filtrado["grado_docente"].astype(str)
+
+# Agrupar por esa combinación
+resumen = df_filtrado.groupby("centro_grado")["cr_total_dias_ingreso"].agg(["count", "mean", "std"])
+resumen = resumen.sort_values("mean", ascending=False)
+
+# Filtrar grupos con al menos 10 estudiantes
+resumen_filtrado = resumen[resumen["count"] >= 10].head(20).reset_index()
+
+# --- Gráfico de barras con barra de error ---
+plt.figure(figsize=(16, 6))
+x = np.arange(len(resumen_filtrado))
+y = resumen_filtrado["mean"]
+error = resumen_filtrado["std"]
+labels = resumen_filtrado["centro_grado"]
+
+plt.bar(x, y, yerr=error, capsize=5, color='lightblue', edgecolor='black')
+plt.xticks(x, labels, rotation=90)
+plt.title("Promedio de días de conexión a CREA por grupo y centro (con desviación estándar)")
+plt.xlabel("Centro - Grado del docente")
+plt.ylabel("Días de conexión a CREA")
+plt.grid(axis='y', linestyle='--', alpha=0.6)
 plt.tight_layout()
 plt.show()
 
-# Visualizar con boxplot
-plt.figure(figsize=(12, 6))
-sns.boxplot(data=df_filtrado, x="id_unico_docente", y="dias_de_conexion_dispositivo")
+# --- Gráfico de boxplot por grupo-centro ---
+df_top = df_filtrado[df_filtrado["centro_grado"].isin(resumen_filtrado["centro_grado"])]
+
+plt.figure(figsize=(16, 6))
+sns.boxplot(data=df_top, x="centro_grado", y="cr_total_dias_ingreso", color="lightgray")
 plt.xticks(rotation=90)
-plt.title("Distribución de conexión por docente")
-plt.xlabel("Docente")
-plt.ylabel("Días de conexión")
+plt.title("Distribución de días de conexión a CREA por grupo y centro")
+plt.xlabel("Centro - Grado del docente")
+plt.ylabel("Días de conexión a CREA")
 plt.tight_layout()
 plt.show()
-
-# varianza para ver diferecias significativas
-# conexiones por docente
-
-grupos = [grupo["dias_de_conexion_dispositivo"].values for _, grupo in df_filtrado.groupby("id_unico_docente") if len(grupo) > 1]
-
-# al menos dos validos para varianza
-if len(grupos) >= 2:
-    f_stat, p_value = f_oneway(*grupos)
-    print(f"\nANOVA F = {f_stat:.3f}, p = {p_value:.4f}")
-    if p_value < 0.05:
-        print("Hay diferencias significativas entre los grupos de docentes.")
-    else:
-        print("No hay diferencias significativas entre los grupos de docentes.")
-else:
-    print("No hay suficientes grupos para realizar ANOVA.")
